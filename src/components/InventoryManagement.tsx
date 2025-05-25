@@ -255,7 +255,7 @@ const InventoryManagement = () => {
   const expiringItems = inventory.filter(item => {
     const expiryDate = new Date(item.expiryDate);
     const today = new Date();
-    const daysToExpiry = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+    const daysToExpiry = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
     return daysToExpiry <= 30 && daysToExpiry >= 0;
   });
 
@@ -502,7 +502,7 @@ const InventoryManagement = () => {
               <div className="space-y-2">
                 <Label htmlFor="productId">Producto *</Label>
                 <Select
-                  value={movementData.productId}
+                  value={movementData.productId.toString()}
                   onValueChange={(value) => setMovementData({...movementData, productId: value})}
                 >
                   <SelectTrigger>
