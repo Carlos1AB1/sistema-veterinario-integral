@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -376,7 +375,7 @@ const MedicalHistory = ({ user }) => {
                 </h3>
                 
                 {selectedPatient.medicalHistory.consultations
-                  .sort((a, b) => new Date(b.date) - new Date(a.date))
+                  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
                   .map((consultation) => (
                     <Card key={consultation.id} className="bg-white/80 backdrop-blur-lg border-0 shadow-lg">
                       <CardContent className="p-6">
