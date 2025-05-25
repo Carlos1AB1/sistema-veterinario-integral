@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -143,8 +142,8 @@ const InventoryManagement = () => {
     }
 
     const newStock = movementData.type === 'entrada' 
-      ? product.currentStock + parseInt(movementData.quantity)
-      : product.currentStock - parseInt(movementData.quantity);
+      ? product.currentStock + Number(movementData.quantity)
+      : product.currentStock - Number(movementData.quantity);
 
     if (newStock < 0) {
       toast.error('Stock insuficiente para la salida');
@@ -169,7 +168,7 @@ const InventoryManagement = () => {
       productId: parseInt(movementData.productId),
       productName: product.name,
       type: movementData.type,
-      quantity: parseInt(movementData.quantity),
+      quantity: Number(movementData.quantity),
       date: new Date().toISOString().split('T')[0],
       reason: movementData.reason,
       user: 'Usuario Actual'
@@ -399,7 +398,7 @@ const InventoryManagement = () => {
                   type="number"
                   min="0"
                   value={formData.currentStock}
-                  onChange={(e) => setFormData({...formData, currentStock: parseInt(e.target.value) || 0})}
+                  onChange={(e) => setFormData({...formData, currentStock: Number(e.target.value) || 0})}
                   required
                 />
               </div>
@@ -411,7 +410,7 @@ const InventoryManagement = () => {
                   type="number"
                   min="0"
                   value={formData.minStock}
-                  onChange={(e) => setFormData({...formData, minStock: parseInt(e.target.value) || 0})}
+                  onChange={(e) => setFormData({...formData, minStock: Number(e.target.value) || 0})}
                   required
                 />
               </div>
@@ -423,7 +422,7 @@ const InventoryManagement = () => {
                   type="number"
                   min="0"
                   value={formData.maxStock}
-                  onChange={(e) => setFormData({...formData, maxStock: parseInt(e.target.value) || 0})}
+                  onChange={(e) => setFormData({...formData, maxStock: Number(e.target.value) || 0})}
                   required
                 />
               </div>
@@ -436,7 +435,7 @@ const InventoryManagement = () => {
                   min="0"
                   step="0.01"
                   value={formData.unitPrice}
-                  onChange={(e) => setFormData({...formData, unitPrice: parseFloat(e.target.value) || 0})}
+                  onChange={(e) => setFormData({...formData, unitPrice: Number(e.target.value) || 0})}
                   required
                 />
               </div>
@@ -502,7 +501,7 @@ const InventoryManagement = () => {
               <div className="space-y-2">
                 <Label htmlFor="productId">Producto *</Label>
                 <Select
-                  value={movementData.productId.toString()}
+                  value={movementData.productId}
                   onValueChange={(value) => setMovementData({...movementData, productId: value})}
                 >
                   <SelectTrigger>
@@ -541,7 +540,7 @@ const InventoryManagement = () => {
                   type="number"
                   min="1"
                   value={movementData.quantity}
-                  onChange={(e) => setMovementData({...movementData, quantity: parseInt(e.target.value) || 0})}
+                  onChange={(e) => setMovementData({...movementData, quantity: Number(e.target.value) || 0})}
                   required
                 />
               </div>
