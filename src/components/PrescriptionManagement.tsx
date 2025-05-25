@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Pill, Plus, Search, Download, Print, FileText, Calendar, User } from 'lucide-react';
+import { Pill, Plus, Search, Download, Printer, FileText, Calendar, User } from 'lucide-react';
 import { toast } from 'sonner';
 
 const PrescriptionManagement = ({ user }) => {
@@ -384,7 +383,7 @@ const PrescriptionManagement = ({ user }) => {
                     size="sm"
                     onClick={() => handlePrint(prescription)}
                   >
-                    <Print className="w-4 h-4 mr-1" />
+                    <Printer className="w-4 h-4 mr-1" />
                     Imprimir
                   </Button>
                 </div>
