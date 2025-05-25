@@ -42,9 +42,14 @@ const LoginForm = ({ onLogin }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-400 via-teal-500 to-blue-600 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.1"%3E%3Ccircle cx="7" cy="7" r="2"/%3E%3Ccircle cx="27" cy="7" r="2"/%3E%3Ccircle cx="47" cy="7" r="2"/%3E%3Ccircle cx="7" cy="27" r="2"/%3E%3Ccircle cx="27" cy="27" r="2"/%3E%3Ccircle cx="47" cy="27" r="2"/%3E%3Ccircle cx="7" cy="47" r="2"/%3E%3Ccircle cx="27" cy="47" r="2"/%3E%3Ccircle cx="47" cy="47" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+      <div className="absolute inset-0 opacity-10">
+        <div className="w-full h-full bg-white bg-opacity-5" style={{
+          backgroundImage: `radial-gradient(circle at 25px 25px, white 2px, transparent 0)`,
+          backgroundSize: '50px 50px'
+        }}></div>
+      </div>
       
-      <Card className="w-full max-w-md bg-white/95 backdrop-blur-lg shadow-2xl border-0 animate-scale-in">
+      <Card className="w-full max-w-md bg-white/95 backdrop-blur-lg shadow-2xl border-0 animate-scale-in relative z-10">
         <CardHeader className="text-center pb-2">
           <div className="flex justify-center mb-4">
             <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center shadow-lg">
