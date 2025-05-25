@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -87,7 +88,7 @@ const Index = () => {
             </div>
             <div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                Clinica veterinaria humboldt
+                Clínica Veterinaria Humboldt
               </h1>
               <p className="text-sm text-gray-600">Sistema Veterinario Integral</p>
             </div>
