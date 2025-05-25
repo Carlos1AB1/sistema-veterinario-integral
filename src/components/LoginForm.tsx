@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Heart, Shield, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
+import PasswordRecovery from './PasswordRecovery';
 
 const LoginForm = ({ onLogin }) => {
+  const [showPasswordRecovery, setShowPasswordRecovery] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -40,16 +42,15 @@ const LoginForm = ({ onLogin }) => {
     }, 1000);
   };
 
+  if (showPasswordRecovery) {
+    return <PasswordRecovery onBackToLogin={() => setShowPasswordRecovery(false)} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-400 via-teal-500 to-blue-600 flex items-center justify-center p-4">
-      <div className="absolute inset-0 opacity-10">
-        <div className="w-full h-full bg-white bg-opacity-5" style={{
-          backgroundImage: `radial-gradient(circle at 25px 25px, white 2px, transparent 0)`,
-          backgroundSize: '50px 50px'
-        }}></div>
-      </div>
+      <div className="absolute inset-0 bg-gradient-to-br from-black/10 to-black/20"></div>
       
-      <Card className="w-full max-w-md bg-white/95 backdrop-blur-lg shadow-2xl border-0 animate-scale-in relative z-10">
+      <Card className="w-full max-w-md bg-white/95 backdrop-blur-lg shadow-2xl border-0 animate-scale-in">
         <CardHeader className="text-center pb-2">
           <div className="flex justify-center mb-4">
             <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center shadow-lg">
@@ -115,6 +116,7 @@ const LoginForm = ({ onLogin }) => {
           <div className="text-center">
             <Button
               variant="ghost"
+              onClick={() => setShowPasswordRecovery(true)}
               className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
             >
               ¿Olvidaste tu contraseña?

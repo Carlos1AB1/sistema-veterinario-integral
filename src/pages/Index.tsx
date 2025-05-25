@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Heart, Shield, Users, Calendar, FileText, Pill, BarChart, User, Search } from 'lucide-react';
+import { Heart, Shield, Users, Calendar, FileText, Pill, BarChart, User, Search, Receipt } from 'lucide-react';
 import LoginForm from '@/components/LoginForm';
 import Dashboard from '@/components/Dashboard';
 import UserManagement from '@/components/UserManagement';
@@ -11,6 +11,8 @@ import PatientManagement from '@/components/PatientManagement';
 import AppointmentManagement from '@/components/AppointmentManagement';
 import MedicalHistory from '@/components/MedicalHistory';
 import PrescriptionManagement from '@/components/PrescriptionManagement';
+import InventoryManagement from '@/components/InventoryManagement';
+import BillingManagement from '@/components/BillingManagement';
 import Reports from '@/components/Reports';
 
 const Index = () => {
@@ -39,6 +41,8 @@ const Index = () => {
     { id: 'appointments', label: 'Citas', icon: Calendar },
     { id: 'medical', label: 'Historia Clínica', icon: FileText },
     { id: 'prescriptions', label: 'Prescripciones', icon: Pill },
+    { id: 'inventory', label: 'Inventario', icon: Search },
+    { id: 'billing', label: 'Facturación', icon: Receipt },
     { id: 'reports', label: 'Reportes', icon: BarChart },
   ];
 
@@ -62,6 +66,10 @@ const Index = () => {
         return <MedicalHistory user={currentUser} />;
       case 'prescriptions':
         return <PrescriptionManagement user={currentUser} />;
+      case 'inventory':
+        return <InventoryManagement />;
+      case 'billing':
+        return <BillingManagement />;
       case 'reports':
         return <Reports />;
       default:
