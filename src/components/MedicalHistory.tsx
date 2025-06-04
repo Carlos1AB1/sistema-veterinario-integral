@@ -8,79 +8,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { FileText, Plus, Search, Calendar, User, Heart, Upload, Download, Eye } from 'lucide-react';
 import { toast } from 'sonner';
+import { useData } from '@/contexts/DataContext';
 
 const MedicalHistory = ({ user }) => {
+  const { patients, consultations, setConsultations } = useData();
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [showConsultationForm, setShowConsultationForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   
-  const [patients] = useState([
-    {
-      id: 1,
-      name: 'Max',
-      species: 'Perro',
-      breed: 'Golden Retriever',
-      owner: 'Ana García',
-      age: 3,
-      weight: 28.5,
-      medicalHistory: {
-        created: '2024-01-15',
-        consultations: [
-          {
-            id: 1,
-            date: '2024-03-01',
-            veterinarian: 'Dr. Carlos Rodríguez',
-            reason: 'Consulta rutinaria',
-            diagnosis: 'Estado de salud excelente',
-            treatment: 'Continuar con alimentación actual. Próxima revisión en 6 meses.',
-            weight: 28.5,
-            temperature: 38.2,
-            heartRate: 90,
-            attachments: []
-          },
-          {
-            id: 2,
-            date: '2024-01-15',
-            veterinarian: 'Dra. María González',
-            reason: 'Primera consulta',
-            diagnosis: 'Paciente sano, vacunas al día',
-            treatment: 'Plan de vacunación completado. Desparasitación cada 3 meses.',
-            weight: 27.8,
-            temperature: 38.1,
-            heartRate: 88,
-            attachments: ['vacunas.pdf', 'analisis_sangre.pdf']
-          }
-        ]
-      }
-    },
-    {
-      id: 2,
-      name: 'Luna',
-      species: 'Gato',
-      breed: 'Persa',
-      owner: 'Carlos López',
-      age: 2,
-      weight: 4.2,
-      medicalHistory: {
-        created: '2024-02-20',
-        consultations: [
-          {
-            id: 1,
-            date: '2024-02-28',
-            veterinarian: 'Dra. María González',
-            reason: 'Problema digestivo',
-            diagnosis: 'Gastritis leve',
-            treatment: 'Dieta blanda por 5 días. Medicación: Omeprazol 5mg cada 24h.',
-            weight: 4.2,
-            temperature: 38.8,
-            heartRate: 180,
-            attachments: []
-          }
-        ]
-      }
-    }
-  ]);
-
   const [consultationForm, setConsultationForm] = useState({
     reason: '',
     diagnosis: '',
@@ -91,9 +26,24 @@ const MedicalHistory = ({ user }) => {
     notes: ''
   });
 
-  const filteredPatients = patients.filter(patient =>
+  // Get consultations for selected patient
+  const getPatientConsultations = (patientId) => {
+    return consultations.filter(consultation => consultation.patientId === patientId)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  };
+
+  // Add medical history to patient data
+  const patientsWithHistory = patients.map(patient => ({
+    ...patient,
+    medicalHistory: {
+      created: patient.registrationDate,
+      consultations: getPatientConsultations(patient.id)
+    }
+  }));
+
+  const filteredPatients = patientsWithHistory.filter(patient =>
     patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    patient.owner.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    patient.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     patient.breed.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -115,6 +65,7 @@ const MedicalHistory = ({ user }) => {
 
     const newConsultation = {
       id: Date.now(),
+      patientId: selectedPatient.id,
       date: new Date().toISOString().split('T')[0],
       veterinarian: user.name,
       ...consultationForm,
@@ -124,7 +75,7 @@ const MedicalHistory = ({ user }) => {
       attachments: []
     };
 
-    // Aquí normalmente actualizarías la base de datos
+    setConsultations(prev => [newConsultation, ...prev]);
     toast.success('Consulta registrada correctamente');
     
     setConsultationForm({
@@ -140,7 +91,6 @@ const MedicalHistory = ({ user }) => {
   };
 
   const handleFileUpload = (consultationId) => {
-    // Simular carga de archivo
     toast.success('Archivo adjuntado correctamente');
   };
 
@@ -205,7 +155,7 @@ const MedicalHistory = ({ user }) => {
                     <div>
                       <p className="font-semibold text-gray-900">{patient.name}</p>
                       <p className="text-sm text-gray-600">{patient.breed}</p>
-                      <p className="text-xs text-gray-500">{patient.owner}</p>
+                      <p className="text-xs text-gray-500">{patient.clientName}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -247,7 +197,7 @@ const MedicalHistory = ({ user }) => {
                   </div>
                   <div className="mt-4 p-3 bg-emerald-50 rounded-lg">
                     <p className="text-sm text-emerald-700">
-                      <strong>Propietario:</strong> {selectedPatient.owner}
+                      <strong>Propietario:</strong> {selectedPatient.clientName}
                     </p>
                     <p className="text-sm text-emerald-700">
                       <strong>Historia creada:</strong> {new Date(selectedPatient.medicalHistory.created).toLocaleDateString('es-ES')}
@@ -374,92 +324,90 @@ const MedicalHistory = ({ user }) => {
                   Historial de Consultas ({selectedPatient.medicalHistory.consultations.length})
                 </h3>
                 
-                {selectedPatient.medicalHistory.consultations
-                  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                  .map((consultation) => (
-                    <Card key={consultation.id} className="bg-white/80 backdrop-blur-lg border-0 shadow-lg">
-                      <CardContent className="p-6">
-                        <div className="flex justify-between items-start mb-4">
-                          <div>
-                            <h4 className="text-lg font-semibold text-gray-900">{consultation.reason}</h4>
-                            <p className="text-sm text-gray-600 flex items-center">
-                              <Calendar className="w-4 h-4 mr-1" />
-                              {new Date(consultation.date).toLocaleDateString('es-ES', {
-                                weekday: 'long',
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                              })}
-                            </p>
-                            <p className="text-sm text-gray-600 flex items-center">
-                              <User className="w-4 h-4 mr-1" />
-                              {consultation.veterinarian}
-                            </p>
-                          </div>
-                          <Badge variant="outline" className="bg-emerald-50 text-emerald-700">
-                            Consulta #{consultation.id}
-                          </Badge>
+                {selectedPatient.medicalHistory.consultations.map((consultation) => (
+                  <Card key={consultation.id} className="bg-white/80 backdrop-blur-lg border-0 shadow-lg">
+                    <CardContent className="p-6">
+                      <div className="flex justify-between items-start mb-4">
+                        <div>
+                          <h4 className="text-lg font-semibold text-gray-900">{consultation.reason}</h4>
+                          <p className="text-sm text-gray-600 flex items-center">
+                            <Calendar className="w-4 h-4 mr-1" />
+                            {new Date(consultation.date).toLocaleDateString('es-ES', {
+                              weekday: 'long',
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric'
+                            })}
+                          </p>
+                          <p className="text-sm text-gray-600 flex items-center">
+                            <User className="w-4 h-4 mr-1" />
+                            {consultation.veterinarian}
+                          </p>
                         </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                          <div>
-                            <h5 className="font-semibold text-gray-800 mb-2">Signos Vitales</h5>
-                            <div className="space-y-1 text-sm">
-                              <p><strong>Peso:</strong> {consultation.weight} kg</p>
-                              <p><strong>Temperatura:</strong> {consultation.temperature} °C</p>
-                              <p><strong>Freq. Cardíaca:</strong> {consultation.heartRate} bpm</p>
-                            </div>
-                          </div>
-                          
-                          <div>
-                            <h5 className="font-semibold text-gray-800 mb-2">Diagnóstico</h5>
-                            <p className="text-sm text-gray-700">{consultation.diagnosis}</p>
-                          </div>
-                          
-                          <div>
-                            <h5 className="font-semibold text-gray-800 mb-2">Tratamiento</h5>
-                            <p className="text-sm text-gray-700">{consultation.treatment}</p>
+                        <Badge variant="outline" className="bg-emerald-50 text-emerald-700">
+                          Consulta #{consultation.id}
+                        </Badge>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                          <h5 className="font-semibold text-gray-800 mb-2">Signos Vitales</h5>
+                          <div className="space-y-1 text-sm">
+                            <p><strong>Peso:</strong> {consultation.weight} kg</p>
+                            <p><strong>Temperatura:</strong> {consultation.temperature} °C</p>
+                            <p><strong>Freq. Cardíaca:</strong> {consultation.heartRate} bpm</p>
                           </div>
                         </div>
                         
-                        {consultation.attachments.length > 0 && (
-                          <div className="mt-4 pt-4 border-t border-gray-200">
-                            <h5 className="font-semibold text-gray-800 mb-2 flex items-center">
-                              <Upload className="w-4 h-4 mr-1" />
-                              Archivos Adjuntos
-                            </h5>
-                            <div className="flex flex-wrap gap-2">
-                              {consultation.attachments.map((file, index) => (
-                                <div key={index} className="flex items-center space-x-2 bg-gray-100 rounded-lg px-3 py-2">
-                                  <FileText className="w-4 h-4 text-blue-600" />
-                                  <span className="text-sm">{file}</span>
-                                  <Button variant="ghost" size="sm">
-                                    <Eye className="w-4 h-4" />
-                                  </Button>
-                                  <Button variant="ghost" size="sm">
-                                    <Download className="w-4 h-4" />
-                                  </Button>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
+                        <div>
+                          <h5 className="font-semibold text-gray-800 mb-2">Diagnóstico</h5>
+                          <p className="text-sm text-gray-700">{consultation.diagnosis}</p>
+                        </div>
                         
-                        {(user.role === 'veterinario' || user.role === 'admin') && (
-                          <div className="mt-4 pt-4 border-t border-gray-200">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleFileUpload(consultation.id)}
-                            >
-                              <Upload className="w-4 h-4 mr-2" />
-                              Adjuntar Archivo
-                            </Button>
+                        <div>
+                          <h5 className="font-semibold text-gray-800 mb-2">Tratamiento</h5>
+                          <p className="text-sm text-gray-700">{consultation.treatment}</p>
+                        </div>
+                      </div>
+                      
+                      {consultation.attachments.length > 0 && (
+                        <div className="mt-4 pt-4 border-t border-gray-200">
+                          <h5 className="font-semibold text-gray-800 mb-2 flex items-center">
+                            <Upload className="w-4 h-4 mr-1" />
+                            Archivos Adjuntos
+                          </h5>
+                          <div className="flex flex-wrap gap-2">
+                            {consultation.attachments.map((file, index) => (
+                              <div key={index} className="flex items-center space-x-2 bg-gray-100 rounded-lg px-3 py-2">
+                                <FileText className="w-4 h-4 text-blue-600" />
+                                <span className="text-sm">{file}</span>
+                                <Button variant="ghost" size="sm">
+                                  <Eye className="w-4 h-4" />
+                                </Button>
+                                <Button variant="ghost" size="sm">
+                                  <Download className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            ))}
                           </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  ))}
+                        </div>
+                      )}
+                      
+                      {(user.role === 'veterinario' || user.role === 'admin') && (
+                        <div className="mt-4 pt-4 border-t border-gray-200">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleFileUpload(consultation.id)}
+                          >
+                            <Upload className="w-4 h-4 mr-2" />
+                            Adjuntar Archivo
+                          </Button>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </>
           ) : (

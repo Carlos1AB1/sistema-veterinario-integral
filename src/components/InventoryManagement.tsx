@@ -7,76 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Package, Plus, Edit, Trash2, Search, AlertTriangle, Calendar, TrendingDown, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
+import { useData } from '@/contexts/DataContext';
 
 const InventoryManagement = () => {
-  const [inventory, setInventory] = useState([
-    {
-      id: 1,
-      name: 'Amoxicilina 500mg',
-      category: 'antibiotico',
-      currentStock: 45,
-      minStock: 20,
-      maxStock: 100,
-      unitPrice: 2.50,
-      supplier: 'Laboratorios Veterinarios SA',
-      batch: 'AMX-2024-001',
-      expiryDate: '2025-06-15',
-      lastMovement: '2024-01-20',
-      movementType: 'entrada'
-    },
-    {
-      id: 2,
-      name: 'Vacuna Antirábica',
-      category: 'vacuna',
-      currentStock: 8,
-      minStock: 15,
-      maxStock: 50,
-      unitPrice: 12.00,
-      supplier: 'BioVet Internacional',
-      batch: 'VAC-2024-002',
-      expiryDate: '2024-12-30',
-      lastMovement: '2024-01-18',
-      movementType: 'salida'
-    },
-    {
-      id: 3,
-      name: 'Jeringa 5ml',
-      category: 'material',
-      currentStock: 150,
-      minStock: 50,
-      maxStock: 300,
-      unitPrice: 0.35,
-      supplier: 'Suministros Médicos López',
-      batch: 'JER-2024-003',
-      expiryDate: '2026-03-20',
-      lastMovement: '2024-01-22',
-      movementType: 'entrada'
-    }
-  ]);
-
-  const [movements, setMovements] = useState([
-    {
-      id: 1,
-      productId: 1,
-      productName: 'Amoxicilina 500mg',
-      type: 'entrada',
-      quantity: 50,
-      date: '2024-01-20',
-      reason: 'Compra a proveedor',
-      user: 'Ana López'
-    },
-    {
-      id: 2,
-      productId: 2,
-      productName: 'Vacuna Antirábica',
-      type: 'salida',
-      quantity: 7,
-      date: '2024-01-18',
-      reason: 'Vacunación pacientes',
-      user: 'Dr. Carlos Rodríguez'
-    }
-  ]);
-
+  const { inventory, setInventory, movements, setMovements } = useData();
   const [showForm, setShowForm] = useState(false);
   const [showMovementForm, setShowMovementForm] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
